@@ -56,15 +56,121 @@
 </head>
 <body>
   <div class="box">
-    <h1> Hello from my CSC cPouta VPS!</h1>
+    <h1> Hello from my CSC Rahti container!</h1>
     <p class="subtitle">Cloud Services Assignment — Deployed by Ruvindra</p>
     <div class="details">
-      <p><span>Server:</span> Apache2 on Ubuntu</p>
-      <p><span>Hosting:</span> CSC cPouta (OpenStack)</p>
-      <p><span>Deployment method:</span> SCP file transfer + SSH</p>
+      <p><span>Server:</span> Apache HTTP Server</p>
+      <p><span>Hosting:</span> CSC Rahti (OpenStack)</p>
+      <p><span>Deployment method:</span> Git repo + oc new app build</p>
       <p><span>Status:</span> Live and running </p>
     </div>
-    <p class="footer">This page proves my VPS is publicly reachable and serving custom content.</p>
+    <p class="footer">This page proves my container is publicly reachable and serving custom content.</p>
   </div>
+
+<main>
+
+  <section>
+    <h2>Assignment Answers</h2>
+
+    <div class="question">
+      <h3>1. Describe reasons why so many (most?) companies are using cloud based email and calendar services</h3>
+      <p>Companies increasingly favor cloud-based email over traditional on-premises servers for several practical reasons.</p>
+      <ul>
+        <li><strong>Convenience</strong> is the most important reason. As long as there's an internet connection and a device, employees can access their messages from anywhere, rather than being tied to office infrastructure.</li>
+        <li><strong>Cost</strong> is a major factor too. An in-house server looks cheap at first glance, but the real cost adds up quickly such as the server hardware, the operating system and email platform licenses, the physical rack, plus ongoing electricity, cooling, and IT staff to maintain it all. Cloud providers absorb these costs and spread them across many customers.</li>
+        <li><strong>Security</strong> tends to be stronger with cloud providers. Large providers treat security as a top priority and typically have more resources and expertise than an individual company could dedicate to protecting an in-house server. Cloud services also scale automatically as a company grows, so businesses don't need to worry about expanding their own infrastructure.</li>
+        <li><strong>Scalability</strong> is another advantage. As a company grows, the provider handles the scaling of infrastructure, freeing the internal team to focus on their actual work rather than expanding server capacity.</li>
+        <li><strong>Disaster recovery</strong> is far easier with cloud email. If an on-premises server is infected or fails, recovering that data can be difficult or even impossible. Cloud platforms build in redundancy, so messages, contacts, and other data can typically be restored quickly.</li>
+      </ul>
+      <p class="sources">Source: <a href="https://www.microsoft.com/en-us/microsoft-365/business-insights-ideas/resources/5-ways-cloud-email-must-have-for-your-business" target="_blank">Microsoft — 5 ways cloud email is a must-have for your business</a></p>
+    </div>
+
+    <div class="question">
+      <h3>2. What would a mid-size company store to the Amazon Glacier? What not? Why? What other large cloud backup or mass storage providers are there?</h3>
+      <p>Glacier fits data that is rarely accessed but needs to be kept for a long time. Good candidates include regulatory compliance archives, such as financial, tax, and legal records; disaster recovery backups, such as old server and database backups; and historical data, such as archived emails, old security footage, and completed project files.</p>
+      <p>What doesn't belong there are active files that employees access regularly, high-traffic web assets such as images or scripts used by a live website, or data that will be deleted soon. Glacier storage classes are designed for long-term storage and can have minimum storage-duration charges.</p>
+      <p>The main trade-off is low storage cost versus slower and potentially more expensive retrieval. Some Glacier storage classes can be extremely inexpensive for long-term archiving, but retrieving large amounts of data can take longer and may incur retrieval and data-transfer charges. Therefore, Glacier is ideal for data that can be stored and rarely accessed, rather than data that is actively used.</p>
+      <p>Other cloud backup and mass-storage providers include Microsoft Azure Blob Storage, Google Cloud Storage, Backblaze B2, Wasabi, iDrive e2, Hetzner Storage Box, and Scaleway. Several of these services can also be used with rclone, making them suitable for automated backups.</p>
+      <p class="sources">Sources: <a href="https://www.filecloud.com/blog/system-admin-guide-to-cloud-storage/" target="_blank">FileCloud — System admin guide to cloud storage</a>, <a href="https://www.reddit.com/r/DataHoarder/comments/yo3bgh/what_are_the_cheapest_cloud_storage_providers/" target="_blank">r/DataHoarder discussion</a></p>
+    </div>
+
+    <div class="question">
+      <h3>3. Select and describe 2-3 well-known Amazon S3 data leak incidents. What went wrong? List some automated S3 bucket search engines and attack tools (don't try the tools, illegal!)</h3>
+      <p><strong>Deep Root Analytics (2017)</strong> — A political data firm left voter profiling data on a completely open S3 server, exposing personal information and predictive voting behavior data for roughly 198 million Americans. The bucket had no authentication at all, meaning anyone who found the URL could access it.</p>
+      <p><strong>Accenture (2017)</strong> — One of the more damaging leaks: at least four S3 buckets were set to public, exposing master access keys for Accenture's AWS account, 40,000 plaintext customer passwords, decryption keys, certificates, and proprietary source code. This wasn't just a data exposure — it handed attackers the credentials needed to potentially access deeper systems.</p>
+      <p><strong>Verizon (2017, twice)</strong> — First, a Verizon partner exposed 6 million customer call-log records on a public S3 bucket. Months later, a Verizon engineer set up a separate, unauthorized S3 account containing internal technical data, including server architecture details and login credentials.</p>
+      <p>In all these cases, boiled down to the same root cause: S3 buckets were misconfigured to allow public access, often with no authentication required at all. This wasn't a flaw in AWS's infrastructure. It was human error in setting bucket permissions, frequently made worse by third-party vendors or contractors who had access to the data but didn't follow proper security practices.</p>
+      <p>Automated S3 bucket search/discovery tools:</p>
+      <ul>
+        <li><strong>GrayhatWarfare</strong> — a searchable index of publicly exposed S3 buckets</li>
+        <li><strong>S3Scanner</strong> — checks for open/misconfigured buckets by name</li>
+        <li><strong>Bucket Stream</strong> — monitors certificate transparency logs to find bucket names as they appear</li>
+        <li><strong>AWSBucketDump</strong> — enumerates and dumps content from open buckets given a wordlist</li>
+        <li><strong>Slurp</strong> — searches for buckets tied to a domain or keyword across providers</li>
+      </ul>
+      <p class="sources">Source: <a href="https://businessinsights.bitdefender.com/worst-amazon-breaches" target="_blank">Bitdefender — Worst Amazon S3 breaches</a></p>
+    </div>
+
+    <div class="question">
+      <h3>4. Describe reasons, why many IoT devices (internet connected home appliances, Smart-TVs and such) are using Google's 8.8.8.8 or some other public DNS resolvers?</h3>
+      <p>Many IoT devices, such as smart TVs, connected appliances, and streaming boxes, hardcode a public resolver like 8.8.8.8 instead of relying on the local network's DNS for a few practical reasons.</p>
+      <ul>
+        <li><strong>Reliability and consistency:</strong> manufacturers want their devices to work the same way regardless of what router or ISP a customer has. A public resolver like Google's is highly available and consistent worldwide, removing dependence on potentially unreliable or poorly configured home routers and ISP DNS servers.</li>
+        <li><strong>Simplicity for the manufacturer:</strong> standardizing on a single, well known resolver across an entire product fleet means the vendor doesn't need to account for the huge variety of DNS setups their devices might encounter. It's one less variable to support or debug.</li>
+        <li><strong>Speed:</strong> Google's DNS uses a large anycast network, so queries are typically resolved quickly from a nearby server, which is useful for devices needing fast, reliable connections to streaming services or update servers.</li>
+        <li><strong>Bypassing weak or restrictive local DNS:</strong> some ISPs hijack unresolved domains to show ads, or have DNS infrastructure that's slow or unstable. By hardcoding a public resolver, device makers avoid those quirks and ensure predictable behavior.</li>
+        <li><strong>Avoiding local network filtering and parental controls:</strong> this can be a downside for the user, since a device hardcoded to 8.8.8.8 may bypass DNS level content filters or parental controls set up on the home router, as it doesn't use the local resolver at all.</li>
+      </ul>
+      <p>The trade off is that this reduces the household's control over the device's DNS behavior and sends its query data to a third party (Google) rather than keeping it local, which is a privacy and control concern some users raise about IoT devices in general.</p>
+      <p class="sources">Source: <a href="https://www.captaindns.com/en/blog/dns-8888-google" target="_blank">CaptainDNS — Why 8.8.8.8?</a></p>
+    </div>
+  </section>
+
+  <section>
+    <h2>Work Documentation — CSC Rahti + Allas</h2>
+
+    <figure>
+      <img src="https://a3s.fi/newproject/Screenshot%2001.png" alt="Step 1 screenshot">
+      <figcaption>Step 1 — Adding "Allas" as a service</figcaption>
+    </figure>
+
+    <figure>
+      <img src="https://a3s.fi/newproject/Screenshot%2002.png" alt="Step 2 screenshot">
+      <figcaption>Step 1 — Adding "Allas" as a service</figcaption>
+    </figure>
+
+    <figure>
+      <img src="https://a3s.fi/newproject/Screenshot%2003.png" alt="Step 3 screenshot">
+      <figcaption>Step 2 — Creating a new bucket</figcaption>
+    </figure>
+
+    <figure>
+      <img src="https://a3s.fi/newproject/Screenshot%2004.png" alt="Step 4 screenshot">
+      <figcaption>Step 3 — Uploading images</figcaption>
+    </figure>
+
+    <figure>
+      <img src="https://a3s.fi/newproject/Screenshot%2005.png" alt="Step 5 screenshot">
+      <figcaption>Step 3 — Uploading images</figcaption>
+    </figure>
+
+    <figure>
+      <img src="https://a3s.fi/newproject/Screenshot%2006.png" alt="Step 6 screenshot">
+      <figcaption>Step 3 — Uploading images</figcaption>
+    </figure>
+
+    <figure>
+      <p>Full source code for this deployment (index.html + Dockerfile) is available on GitHub:</p>
+      <a class="repo-link" href="https://github.com/ruvindra/Rahti-App" target="_blank">github.com/ruvindra/Rahti-App</a>
+      <img src="https://a3s.fi/newproject/Screenshot%2007.png" alt="Step 7 screenshot">
+      <figcaption>Step 4 — Github repository</figcaption>
+    </figure>
+
+    <h1>My Rahti-app Url is : <a href="https://rahti-app-rahti-app-1.2.rahtiapp.fi/" target="_blank">https://rahti-app-rahti-app-1.2.rahtiapp.fi/</a></h1>
+
+</section>
+
+</main>
+
 </body>
 </html>
